@@ -19,14 +19,14 @@
 
             <div class="details">
                 <div class="col">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtse8nunV37CnJkfgrGMhswH1TfBo_veOnGg&s" >
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtse8nunV37CnJkfgrGMhswH1TfBo_veOnGg&s" width="50px" height="50px" >
                     <div>
                         <p class="humidity">50%</p>
                         <p>Humidity</p>
                     </div>
                 </div>
                 <div class="col">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaj8n8lrvh1MRuN74Vi_0xov_EGYdGlQUbpA&s" >
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaj8n8lrvh1MRuN74Vi_0xov_EGYdGlQUbpA&s" width="50px" height="50px" >
                     <div>
                         <p class="wind">15 km/h</p>
                         <p>Wind speed</p>
@@ -35,5 +35,40 @@
             </div>
         </div>
     </div>
+
+
+
+
+<script>
+const apiKey = "1508b4036c5f48ae873ebadf0a1f0601";  
+const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+const searchBox = document.querySelector(".search input");
+const searchBtn = document.querySelector(".search button");
+
+async function checkWeather(city) {
+  const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+  const data = await response.json();
+
+  console.log(data); // shows full data in console
+
+  document.querySelector(".city").innerHTML = data.name;
+  document.querySelector(".temp").innerHTML =
+    Math.round(data.main.temp) + "°C";
+  document.querySelector(".humidity").innerHTML =
+    data.main.humidity + "%";
+  document.querySelector(".wind").innerHTML =
+    data.wind.speed + " km/h";
+}
+
+
+searchBtn.addEventListener("click",()=>{
+    checkWeather(searchBox.value);
+})
+/* DEFAULT CITY */
+
+</script>
+
+
 </body>
 </html>
