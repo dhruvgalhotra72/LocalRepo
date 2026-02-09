@@ -12,6 +12,9 @@
             <input type="text" placeholder="entry city name"  spellcheck="false">
             <button><img src="https://static.vecteezy.com/system/resources/thumbnails/020/120/837/small/search-icon-simple-style-web-searching-background-symbol-search-brand-logo-design-element-search-t-shirt-printing-for-sticker-free-vector.jpg" width="50px" height="50px"></button>
         </div>
+        <div class="error">
+            <p>Invalid city name</p>
+        </div>
         <div class="weather">
             <img src="https://plus.unsplash.com/premium_vector-1739387351704-a0dafb318834?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" width="250px" height="300px" class="weather-icon">
             <h1 class="temp">22°c</h1>
@@ -45,29 +48,63 @@ const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q="
 
 const searchBox = document.querySelector(".search input");
 const searchBtn = document.querySelector(".search button");
+const weatherIcon = document.querySelector(".weather-icon");
 
 async function checkWeather(city) {
-  const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
-  const data = await response.json();
 
-  console.log(data); // shows full data in console
+    const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
 
-  document.querySelector(".city").innerHTML = data.name;
-  document.querySelector(".temp").innerHTML =
-    Math.round(data.main.temp) + "°C";
-  document.querySelector(".humidity").innerHTML =
-    data.main.humidity + "%";
-  document.querySelector(".wind").innerHTML =
-    data.wind.speed + " km/h";
+    if(response.status==404){
+        document.querySelector(".error").style.display = "block";
+        document.querySelector(".weather").style.display = "none";
+    }else{
+        var data = await response.json();
+
+
+    document.querySelector(".city").innerHTML = data.name;
+    document.querySelector(".temp").innerHTML =
+        Math.round(data.main.temp) + "°C";
+    document.querySelector(".humidity").innerHTML =
+        data.main.humidity + "%";
+    document.querySelector(".wind").innerHTML =
+        data.wind.speed + " km/h";
+
+    const condition = data.weather[0].main;
+
+    if (condition === "Clouds") {
+        weatherIcon.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYksOCl0Azhq01VlSGbR1DQ9XUdxZqE2-srA&s";
+    } else if (condition === "Clear") {
+        weatherIcon.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhbqnMXQNq36woEpkjKYGi1aAVkovzlyxO9w&s";
+    } else if (condition === "Rain") {
+        weatherIcon.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIj7vMf3lWxJpeGfx77dnV3j3MH8-uEG0f8w&s";
+    } else if (condition === "Drizzle") {
+        weatherIcon.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfLRmWRU52b0HAxyB2ELVgDV09xDia_HG2bg&s";
+    } else if (condition === "Mist") {
+        weatherIcon.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRb0n3IGwQlL7A7NmcpjEKwKo4AsF5Z6jy-ug&s";
+    }
+
+    document.querySelector(".weather").style.display = "block";
+    document.querySelector(".error").style.display = "none";
+    }
+      
 }
 
-
-searchBtn.addEventListener("click",()=>{
+// Button click
+searchBtn.addEventListener("click", () => {
     checkWeather(searchBox.value);
-})
-/* DEFAULT CITY */
+});
 
+// Enter key support
+searchBox.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        checkWeather(searchBox.value);
+    }
+});
+
+// Default city (Malout)
+checkWeather("Malout");
 </script>
+
 
 
 </body>
